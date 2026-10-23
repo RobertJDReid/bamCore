@@ -1,1 +1,1 @@
-bamCol_v0.3.5.py
+/Users/breid/Dropbox/git/bamCore/bamCore_v0.3.5.py
