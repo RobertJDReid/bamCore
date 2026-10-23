@@ -1,14 +1,16 @@
-# bamCol.py
+# bamCore.py
 
 _version 0.3.5_
+
+_Formerly named **bamCol**._
 
 ![sequenceRain](images/Align_rain2.png)
 
 **Extract per-read base calls at specific genomic positions from a BAM file using pysam.**
 
-Given a chromosomal position or positions, `bamCol` extracts all base calls at those positions from a BAM file of mapped sequence reads. Output is a CSV table listing the read ID, base call, mapping quality, strand, and other information. The input positions list is automatically divided among available CPU cores for parallel processing.
+Given a chromosomal position or positions, `bamCore` extracts all base calls at those positions from a BAM file of mapped sequence reads. Output is a CSV table listing the read ID, base call, mapping quality, strand, and other information. The input positions list is automatically divided among available CPU cores for parallel processing.
 
-`bamCol` is useful for inspecting allele composition, verifying variant calls, or extracting read-level evidence at specific coordinates. The output can be used to track SNP outcomes along specific reads, providing evidence for strand exchanges or other chromosomal alterations — output CSVs can be loaded directly into [ChimeraMapR](https://github.com/RobertJDReid/ChimeraMapR) to visualize haplotype switches across a chromosome. By default, only primary alignment reads are returned but options for supplementary and secondary alignments are available.
+`bamCore` is useful for inspecting allele composition, verifying variant calls, or extracting read-level evidence at specific coordinates. The output can be used to track SNP outcomes along specific reads, providing evidence for strand exchanges or other chromosomal alterations — output CSVs can be loaded directly into [ChimeraMapR](https://github.com/RobertJDReid/ChimeraMapR) to visualize haplotype switches across a chromosome. By default, only primary alignment reads are returned but options for supplementary and secondary alignments are available.
 
 ---
 
@@ -24,10 +26,10 @@ Given a chromosomal position or positions, `bamCol` extracts all base calls at t
 ### Option 1: Conda (Recommended)
 
 ```bash
-conda create -n bamcol -c bioconda -c conda-forge python=3.10 pysam -y
-conda activate bamcol
-git clone <repository-url>
-cd bamCol
+conda create -n bamcore -c bioconda -c conda-forge python=3.10 pysam -y
+conda activate bamcore
+git clone https://github.com/RobertJDReid/bamCore.git
+cd bamCore
 ```
 
 If pysam fails during environment creation, activate the environment and run `pip install pysam`.
@@ -41,25 +43,25 @@ See [Docker Setup](#-docker-setup) at the bottom of this document.
 ## 🚀 Usage
 
 ```bash
-python bamCol.py <bamfile> [options]
+python bamCore.py <bamfile> [options]
 ```
 
 **Quick examples:**
 ```bash
 # Single position
-python bamCol.py sample.bam --pos S288C_chrI:2941 --out alleles.csv
+python bamCore.py sample.bam --pos S288C_chrI:2941 --out alleles.csv
 
 # Multiple positions
-python bamCol.py sample.bam --pos S288C_chrI:2941 --pos S288C_chrI:2947 --out alleles.csv
+python bamCore.py sample.bam --pos S288C_chrI:2941 --pos S288C_chrI:2947 --out alleles.csv
 
 # Position file
-python bamCol.py yeast.bam --pos-file positions.txt --out calls.csv
+python bamCore.py yeast.bam --pos-file positions.txt --out calls.csv
 
 # VCF input
-python bamCol.py sample.bam --vcf-file variants.vcf.gz --out allele_calls.csv
+python bamCore.py sample.bam --vcf-file variants.vcf.gz --out allele_calls.csv
 
 # Pipe to compressed output
-python bamCol.py sample.bam --pos-file SK1_SNPs.csv | pigz > output.csv.gz
+python bamCore.py sample.bam --pos-file SK1_SNPs.csv | pigz > output.csv.gz
 ```
 
 ---
@@ -143,7 +145,7 @@ chr1	2000	.	C	T	35	PASS	DP=55
 
 ```bash
 python make_example_data.py
-python bamCol.py example_data/example.bam --pos-file example_data/positions.txt
+python bamCore.py example_data/example.bam --pos-file example_data/positions.txt
 ```
 
 The `make_example_data.py` script creates an `example_data/` folder with a small BAM file, index, positions file, and example VCF files.
@@ -158,14 +160,14 @@ The `make_example_data.py` script creates an `example_data/` folder with a small
 
 Additional tests:
 ```bash
-python bamCol.py example_data/example.bam --vcf-file example_data/example.vcf
+python bamCore.py example_data/example.bam --vcf-file example_data/example.vcf
 
-python bamCol.py example_data/example.bam \
+python bamCore.py example_data/example.bam \
     --vcf-file example_data/example.vcf \
     --exclude-region S288C_chrI:1400-1600
 
 # Error handling with malformed VCF
-python bamCol.py example_data/example.bam --vcf-file example_data/malformed.vcf
+python bamCore.py example_data/example.bam --vcf-file example_data/malformed.vcf
 ```
 
 ---
@@ -186,16 +188,16 @@ bcftools mpileup -Ou -f reference_genome.fa sample.bam \
 bcftools index sample.vcf.gz
 
 # 2) Extract per-read base calls at variant sites
-python bamCol.py sample.bam \
+python bamCore.py sample.bam \
   --vcf-file sample.vcf.gz \
   --out allele_calls.csv
 ```
 
-For complex filtering, pre-filter the VCF with `bcftools` before passing it to `bamCol`:
+For complex filtering, pre-filter the VCF with `bcftools` before passing it to `bamCore`:
 
 ```bash
 bcftools view -T regions.bed sample.vcf.gz -O z -o filtered.vcf.gz
-python bamCol.py sample.bam --vcf-file filtered.vcf.gz --out allele_calls.csv
+python bamCore.py sample.bam --vcf-file filtered.vcf.gz --out allele_calls.csv
 ```
 
 ---
@@ -245,7 +247,7 @@ Docker provides an isolated environment without managing Python dependencies dir
 ### Building the Image
 
 ```bash
-docker build -t bamcol:0.3.2 .
+docker build -t bamcore:0.3.2 .
 ```
 
 The included `Dockerfile` for reference:
@@ -260,8 +262,8 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --no-cache-dir pysam
 
 WORKDIR /app
-COPY bamCol.py /app/
-ENTRYPOINT ["python", "/app/bamCol.py"]
+COPY bamCore.py /app/
+ENTRYPOINT ["python", "/app/bamCore.py"]
 ```
 
 ### Running with Docker
@@ -269,17 +271,17 @@ ENTRYPOINT ["python", "/app/bamCol.py"]
 All file paths inside the container must be relative to the mounted directory. Mount your local data directory to `/data`:
 
 ```bash
-docker run --rm -v /path/to/data:/data bamcol:0.3.2 \
+docker run --rm -v /path/to/data:/data bamcore:0.3.2 \
     /data/sample.bam --pos chr1:1000 --out /data/results.csv
 ```
 
 Create an alias for convenience:
 ```bash
 # Add to ~/.bashrc or ~/.zshrc
-alias bamcol='docker run --rm -v $(pwd):/data bamcol:0.3.2'
+alias bamcore='docker run --rm -v $(pwd):/data bamcore:0.3.2'
 
 # Then use like a normal command
-bamcol /data/sample.bam --pos chr1:1000 --out /data/results.csv
+bamcore /data/sample.bam --pos chr1:1000 --out /data/results.csv
 ```
 
 ### Testing the Docker Installation
@@ -289,8 +291,8 @@ bamcol /data/sample.bam --pos chr1:1000 --out /data/results.csv
 docker run --rm -v $(pwd):/data -w /data python:3.10-slim \
     bash -c "pip install pysam && python /data/make_example_data.py"
 
-# Run bamCol
-docker run --rm -v $(pwd):/data bamcol:0.3.2 \
+# Run bamCore
+docker run --rm -v $(pwd):/data bamcore:0.3.2 \
     /data/example_data/example.bam \
     --pos-file /data/example_data/positions.txt
 ```

@@ -3,7 +3,7 @@ FROM python:3.10-slim
 # Metadata
 LABEL maintainer="Robert J. D. Reid"
 LABEL version="0.3.2"
-LABEL description="bamCol.py - Extract per-read base calls from BAM files"
+LABEL description="bamCore.py - Extract per-read base calls from BAM files"
 
 # Install system dependencies required for pysam
 RUN apt-get update && apt-get install -y \
@@ -21,10 +21,10 @@ RUN pip install --no-cache-dir pysam
 WORKDIR /app
 
 # Copy the script
-COPY bamCol.py /app/
+COPY bamCore.py /app/
 
-# Set the entrypoint to run bamCol.py
-ENTRYPOINT ["python", "/app/bamCol.py"]
+# Set the entrypoint to run bamCore.py
+ENTRYPOINT ["python", "/app/bamCore.py"]
 
 # Default command shows help if no arguments provided
 CMD ["--help"]

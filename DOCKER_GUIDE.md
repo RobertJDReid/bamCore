@@ -1,16 +1,16 @@
-# Docker Quick Reference for bamCol.py
+# Docker Quick Reference for bamCore.py
 
 ## Building the Image
 
 ```bash
 # Build from repository directory
-docker build -t bamcol:0.3.2 .
+docker build -t bamcore:0.3.2 .
 
 # Tag as latest
-docker tag bamcol:0.3.2 bamcol:latest
+docker tag bamcore:0.3.2 bamcore:latest
 
 # Verify the image
-docker images | grep bamcol
+docker images | grep bamcore
 ```
 
 ---
@@ -19,19 +19,19 @@ docker images | grep bamcol
 
 ### Simple position query
 ```bash
-docker run --rm -v $(pwd):/data bamcol:0.3.2 \
+docker run --rm -v $(pwd):/data bamcore:0.3.2 \
     /data/sample.bam --pos chr1:1000 --out /data/results.csv
 ```
 
 ### Using a position file
 ```bash
-docker run --rm -v $(pwd):/data bamcol:0.3.2 \
+docker run --rm -v $(pwd):/data bamcore:0.3.2 \
     /data/sample.bam --pos-file /data/positions.txt --out /data/results.csv
 ```
 
 ### Using a VCF file
 ```bash
-docker run --rm -v $(pwd):/data bamcol:0.3.2 \
+docker run --rm -v $(pwd):/data bamcore:0.3.2 \
     /data/sample.bam --vcf-file /data/variants.vcf.gz --out /data/results.csv
 ```
 
@@ -41,7 +41,7 @@ docker run --rm -v $(pwd):/data bamcol:0.3.2 \
 
 ### With region filtering
 ```bash
-docker run --rm -v $(pwd):/data bamcol:0.3.2 \
+docker run --rm -v $(pwd):/data bamcore:0.3.2 \
     /data/sample.bam \
     --vcf-file /data/variants.vcf.gz \
     --exclude-region chr1:1000-2000 \
@@ -51,7 +51,7 @@ docker run --rm -v $(pwd):/data bamcol:0.3.2 \
 
 ### With multiprocessing
 ```bash
-docker run --rm -v $(pwd):/data bamcol:0.3.2 \
+docker run --rm -v $(pwd):/data bamcore:0.3.2 \
     /data/sample.bam \
     --vcf-file /data/variants.vcf.gz \
     --process 8 \
@@ -60,7 +60,7 @@ docker run --rm -v $(pwd):/data bamcol:0.3.2 \
 
 ### With quality filters
 ```bash
-docker run --rm -v $(pwd):/data bamcol:0.3.2 \
+docker run --rm -v $(pwd):/data bamcore:0.3.2 \
     /data/sample.bam \
     --pos-file /data/positions.txt \
     --min-mapq 30 \
@@ -70,13 +70,13 @@ docker run --rm -v $(pwd):/data bamcol:0.3.2 \
 
 ### Output to stdout (pipe to file)
 ```bash
-docker run --rm -v $(pwd):/data bamcol:0.3.2 \
+docker run --rm -v $(pwd):/data bamcore:0.3.2 \
     /data/sample.bam --pos chr1:1000 > results.csv
 ```
 
 ### Compress output on the fly
 ```bash
-docker run --rm -v $(pwd):/data bamcol:0.3.2 \
+docker run --rm -v $(pwd):/data bamcore:0.3.2 \
     /data/sample.bam --pos-file /data/positions.txt | gzip > results.csv.gz
 ```
 
@@ -104,7 +104,7 @@ docker run --rm \
     -v /data/bams:/bams \
     -v /data/vcfs:/vcfs \
     -v /data/results:/results \
-    bamcol:0.3.2 \
+    bamcore:0.3.2 \
     /bams/sample.bam \
     --vcf-file /vcfs/variants.vcf.gz \
     --out /results/calls.csv
@@ -117,12 +117,12 @@ docker run --rm \
 Add to `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-alias bamcol='docker run --rm -v $(pwd):/data bamcol:0.3.2'
+alias bamcore='docker run --rm -v $(pwd):/data bamcore:0.3.2'
 ```
 
 Then use like a regular command:
 ```bash
-bamcol /data/sample.bam --pos chr1:1000 --out /data/results.csv
+bamcore /data/sample.bam --pos chr1:1000 --out /data/results.csv
 ```
 
 ---
@@ -139,19 +139,19 @@ docker run --rm -v $(pwd):/data python:3.10-slim bash -c \
 
 ### Run test
 ```bash
-docker run --rm -v $(pwd):/data bamcol:0.3.2 \
+docker run --rm -v $(pwd):/data bamcore:0.3.2 \
     /data/example_data/example.bam \
     --pos-file /data/example_data/positions.txt
 ```
 
 ### Check version
 ```bash
-docker run --rm bamcol:0.3.2 --version
+docker run --rm bamcore:0.3.2 --version
 ```
 
 ### View help
 ```bash
-docker run --rm bamcol:0.3.2 --help
+docker run --rm bamcore:0.3.2 --help
 ```
 
 ---
@@ -163,7 +163,7 @@ If you get permission errors with output files:
 ```bash
 # Run with your user ID
 docker run --rm --user $(id -u):$(id -g) \
-    -v $(pwd):/data bamcol:0.3.2 \
+    -v $(pwd):/data bamcore:0.3.2 \
     /data/sample.bam --pos chr1:1000 --out /data/results.csv
 ```
 
@@ -176,10 +176,10 @@ Make sure:
 ### Container won't start
 ```bash
 # Check if image exists
-docker images | grep bamcol
+docker images | grep bamcore
 
 # Rebuild if necessary
-docker build -t bamcol:0.3.2 .
+docker build -t bamcore:0.3.2 .
 
 # Check Docker is running
 docker ps
@@ -191,21 +191,21 @@ docker ps
 
 ### Limit CPU usage
 ```bash
-docker run --rm --cpus=4 -v $(pwd):/data bamcol:0.3.2 \
+docker run --rm --cpus=4 -v $(pwd):/data bamcore:0.3.2 \
     /data/sample.bam --vcf-file /data/variants.vcf.gz --process 4
 ```
 
 ### Limit memory
 ```bash
-docker run --rm --memory=8g -v $(pwd):/data bamcol:0.3.2 \
+docker run --rm --memory=8g -v $(pwd):/data bamcore:0.3.2 \
     /data/sample.bam --vcf-file /data/variants.vcf.gz
 ```
 
 ### Run interactively (for debugging)
 ```bash
-docker run -it --rm -v $(pwd):/data --entrypoint bash bamcol:0.3.2
+docker run -it --rm -v $(pwd):/data --entrypoint bash bamcore:0.3.2
 # Inside container:
-python /app/bamCol.py /data/sample.bam --pos chr1:1000
+python /app/bamCore.py /data/sample.bam --pos chr1:1000
 ```
 
 ---
@@ -216,21 +216,21 @@ If you want to share the image:
 
 ```bash
 # Tag with your Docker Hub username
-docker tag bamcol:0.3.2 yourusername/bamcol:0.3.2
-docker tag bamcol:0.3.2 yourusername/bamcol:latest
+docker tag bamcore:0.3.2 yourusername/bamcore:0.3.2
+docker tag bamcore:0.3.2 yourusername/bamcore:latest
 
 # Login to Docker Hub
 docker login
 
 # Push
-docker push yourusername/bamcol:0.3.2
-docker push yourusername/bamcol:latest
+docker push yourusername/bamcore:0.3.2
+docker push yourusername/bamcore:latest
 ```
 
 Then others can use it:
 ```bash
-docker pull yourusername/bamcol:0.3.2
-docker run --rm -v $(pwd):/data yourusername/bamcol:0.3.2 ...
+docker pull yourusername/bamcore:0.3.2
+docker run --rm -v $(pwd):/data yourusername/bamcore:0.3.2 ...
 ```
 
 ---
@@ -245,7 +245,7 @@ docker buildx create --name multiarch --use
 
 # Build for multiple platforms
 docker buildx build --platform linux/amd64,linux/arm64 \
-    -t yourusername/bamcol:0.3.2 \
+    -t yourusername/bamcore:0.3.2 \
     --push .
 ```
 
@@ -265,10 +265,10 @@ docker image prune
 
 ### Remove specific image
 ```bash
-docker rmi bamcol:0.3.2
+docker rmi bamcore:0.3.2
 ```
 
-### Remove all bamcol images
+### Remove all bamcore images
 ```bash
-docker rmi $(docker images bamcol -q)
+docker rmi $(docker images bamcore -q)
 ```

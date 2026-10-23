@@ -199,22 +199,22 @@ print(f"  5. {malformed_vcf_path} (malformed VCF for error testing)")
 
 print("\nTest commands:")
 print("\n# Test with positions file:")
-print(f"  python bamCol.py {bam_path} --pos-file {pos_path} --out results.csv")
+print(f"  python bamCore.py {bam_path} --pos-file {pos_path} --out results.csv")
 
 print("\n# Test with VCF file:")
-print(f"  python bamCol.py {bam_path} --vcf-file {vcf_path} --out results.csv")
+print(f"  python bamCore.py {bam_path} --vcf-file {vcf_path} --out results.csv")
 
 print("\n# Test with malformed VCF (should show warnings):")
-print(f"  python bamCol.py {bam_path} --vcf-file {malformed_vcf_path} --out results.csv")
+print(f"  python bamCore.py {bam_path} --vcf-file {malformed_vcf_path} --out results.csv")
 
 print("\n# Test with region filtering:")
-print(f"  python bamCol.py {bam_path} --vcf-file {vcf_path} \\")
+print(f"  python bamCore.py {bam_path} --vcf-file {vcf_path} \\")
 print(f"    --exclude-region S288C_chrI:1400-1600 --out results.csv")
 
 print("\n# Test with manual position:")
-print(f"  python bamCol.py {bam_path} --pos S288C_chrI:2958 --out results.csv")
+print(f"  python bamCore.py {bam_path} --pos S288C_chrI:2958 --out results.csv")
 
 print("\n# Test with multiprocessing:")
-print(f"  python bamCol.py {bam_path} --vcf-file {vcf_path} --process 2 --out results.csv")
+print(f"  python bamCore.py {bam_path} --vcf-file {vcf_path} --process 2 --out results.csv")
 
 print("\n" + "="*70)

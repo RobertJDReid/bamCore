@@ -1,4 +1,4 @@
-To do list for bamCol
+To do list for bamCore
 
 - use vcf file for input
 	- establish SNP filters
