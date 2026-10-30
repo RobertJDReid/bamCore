@@ -4,7 +4,7 @@ _version 0.3.5_
 
 _Formerly named **bamCol**._
 
-![sequenceRain](images/Align_rain2.png)
+![sequenceRain](images/Align_rain4.png)
 
 **Extract per-read base calls at specific genomic positions from a BAM file using pysam.**
 
