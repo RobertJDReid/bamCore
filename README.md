@@ -18,6 +18,7 @@ Given a chromosomal position or positions, `bamCore` extracts all base calls at 
 
 - Python 3.8+
 - [pysam](https://pysam.readthedocs.io/en/latest/)
+- [tqdm](https://github.com/tqdm/tqdm) *(optional)* — drives a progress bar during processing. If tqdm is not installed, bamCore runs normally without one.
 
 ---
 
@@ -26,13 +27,23 @@ Given a chromosomal position or positions, `bamCore` extracts all base calls at 
 ### Option 1: Conda (Recommended)
 
 ```bash
-conda create -n bamcore -c bioconda -c conda-forge python=3.10 pysam -y
+conda create -n bamcore -c bioconda -c conda-forge python=3.10 pysam tqdm -y
 conda activate bamcore
 git clone https://github.com/RobertJDReid/bamCore.git
 cd bamCore
 ```
 
 If pysam fails during environment creation, activate the environment and run `pip install pysam`.
+
+### Optional: Progress bar with tqdm
+
+`bamCore` uses [tqdm](https://github.com/tqdm/tqdm) to display a progress bar if it is installed. The conda command above and the Docker image include it; to add it to an existing environment, run:
+
+```bash
+pip install tqdm
+```
+
+The progress bar is written to stderr and is shown when writing results to a file with `--out` (it is suppressed when output goes to stdout).
 
 ### Option 2: Docker
 
@@ -223,8 +234,7 @@ An auxiliary R script is included for more stringent SNP pre-filtering than `--v
 
 ## 🔄 Version History
 
-**v0.3.4** - Added progress bar if user has `tqdm` installed.
-`tqdm` can be installed via homebrew
+**v0.3.4** — Added progress bar if user has `tqdm` installed (`pip install tqdm`; see [Installation](#-installation)).
 
 **v0.3.3** - Added `--adjust-hardclip` to account for hard clipped sequences
 when calculating `read_position` in output. Useful for analyses that use
@@ -247,7 +257,7 @@ Docker provides an isolated environment without managing Python dependencies dir
 ### Building the Image
 
 ```bash
-docker build -t bamcore:0.3.2 .
+docker build -t bamcore:0.3.5 .
 ```
 
 The included `Dockerfile` for reference:
@@ -259,7 +269,7 @@ RUN apt-get update && apt-get install -y \
     gcc libbz2-dev liblzma-dev zlib1g-dev libcurl4-openssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir pysam
+RUN pip install --no-cache-dir pysam tqdm
 
 WORKDIR /app
 COPY bamCore.py /app/
@@ -271,14 +281,14 @@ ENTRYPOINT ["python", "/app/bamCore.py"]
 All file paths inside the container must be relative to the mounted directory. Mount your local data directory to `/data`:
 
 ```bash
-docker run --rm -v /path/to/data:/data bamcore:0.3.2 \
+docker run --rm -v /path/to/data:/data bamcore:0.3.5 \
     /data/sample.bam --pos chr1:1000 --out /data/results.csv
 ```
 
 Create an alias for convenience:
 ```bash
 # Add to ~/.bashrc or ~/.zshrc
-alias bamcore='docker run --rm -v $(pwd):/data bamcore:0.3.2'
+alias bamcore='docker run --rm -v $(pwd):/data bamcore:0.3.5'
 
 # Then use like a normal command
 bamcore /data/sample.bam --pos chr1:1000 --out /data/results.csv
@@ -292,7 +302,7 @@ docker run --rm -v $(pwd):/data -w /data python:3.10-slim \
     bash -c "pip install pysam && python /data/make_example_data.py"
 
 # Run bamCore
-docker run --rm -v $(pwd):/data bamcore:0.3.2 \
+docker run --rm -v $(pwd):/data bamcore:0.3.5 \
     /data/example_data/example.bam \
     --pos-file /data/example_data/positions.txt
 ```
