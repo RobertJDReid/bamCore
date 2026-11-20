@@ -20,6 +20,8 @@ Given a chromosomal position or positions, `bamCore` extracts all base calls at 
 - [pysam](https://pysam.readthedocs.io/en/latest/)
 - [tqdm](https://github.com/tqdm/tqdm) *(optional)* — drives a progress bar during processing. If tqdm is not installed, bamCore runs normally without one.
 
+> **Windows:** pysam is only distributed for Linux and macOS, so bamCore cannot run in native Windows Python. On Windows, use the [Docker image](#-docker-setup) (Docker Desktop with the WSL 2 backend) or run the Conda instructions inside WSL 2. Enabling WSL 2 the first time may require administrator rights.
+
 ---
 
 ## 📦 Installation
@@ -272,7 +274,7 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --no-cache-dir pysam tqdm
 
 WORKDIR /app
-COPY bamCore.py /app/
+COPY bamCore_v0.3.5.py /app/bamCore.py
 ENTRYPOINT ["python", "/app/bamCore.py"]
 ```
 
@@ -292,6 +294,15 @@ alias bamcore='docker run --rm -v $(pwd):/data bamcore:0.3.5'
 
 # Then use like a normal command
 bamcore /data/sample.bam --pos chr1:1000 --out /data/results.csv
+```
+
+On Windows (PowerShell), `$(pwd)` is not valid; use `${PWD}` or a full path:
+```powershell
+docker run --rm -v "${PWD}:/data" bamcore:0.3.5 `
+    /data/sample.bam --vcf-file /data/variants.vcf.gz --out /data/results.csv
+
+# or with an explicit path
+docker run --rm -v "C:\path\to\data:/data" bamcore:0.3.5 /data/sample.bam --pos chr1:1000
 ```
 
 ### Testing the Docker Installation
