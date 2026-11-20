@@ -20,8 +20,9 @@ RUN pip install --no-cache-dir pysam tqdm
 # Create app directory
 WORKDIR /app
 
-# Copy the script
-COPY bamCore.py /app/
+# Copy the script. bamCore.py in the repo is a symlink to the versioned file,
+# which does not resolve on other machines, so copy the versioned file directly.
+COPY bamCore_v0.3.5.py /app/bamCore.py
 
 # Set the entrypoint to run bamCore.py
 ENTRYPOINT ["python", "/app/bamCore.py"]
